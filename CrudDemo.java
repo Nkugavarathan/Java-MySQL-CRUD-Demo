@@ -35,20 +35,31 @@ public class CrudDemo {
                 case 1:
                     System.out.println("1. Insert New Data ");
                     System.out.print("Enter Name : ");
-                    name=scan.next();
+                    name = scan.next();
                     System.out.print("Enter Age : ");
-                    age= scan.nextInt();
+                    age = scan.nextInt();
                     System.out.print("Enter City : ");
-                    city=scan.next();
+                    city = scan.next();
 
-                    query="insert into User (Name,Age,City) values(?,?,?)";
-                    pst=con.prepareStatement(query);
-                    pst.setString(1,name);
-                    pst.setInt(2,age);
-                    pst.setString(3,city);
+                    query = "insert into User (Name,Age,City) values(?,?,?)";
+                    pst = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+                    pst.setString(1, name);
+                    pst.setInt(2, age);
+                    pst.setString(3, city);
                     pst.executeUpdate();
-                    System.out.println("Successfully Inserted...");
+
+                    // Retrieve generated ID
+                    rs = pst.getGeneratedKeys();
+                    if (rs.next()) {
+                        int generatedId = rs.getInt(1); // Get the generated ID
+                        System.out.println("Data Successfully Inserted with ID: " + generatedId);
+                    } else {
+                        System.out.println("Insertion successful, but couldn't retrieve ID.");
+                    }
+
                     break;
+
                 case 2:
                     System.out.println("2. Update a data");
                     System.out.print("Enter ID : ");
